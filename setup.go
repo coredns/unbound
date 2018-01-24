@@ -34,6 +34,7 @@ func setup(c *caddy.Controller) error {
 			}
 			if x, ok := m.(*metrics.Metrics); ok {
 				x.MustRegister(RequestDuration)
+				x.MustRegister(RcodeCount)
 			}
 		})
 		return nil
