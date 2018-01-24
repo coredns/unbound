@@ -63,4 +63,4 @@ also need the libunbound source code installed.
 
 ## See Also
 
-See <https://unbound.net> for information on Unbound.
+See <https://unbound.net> for information on Unbound and unbound.conf(5).

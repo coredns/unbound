@@ -1,6 +1,8 @@
 package unbound
 
 import (
+	"log"
+
 	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/coredns/request"
 
@@ -20,11 +22,28 @@ type Unbound struct {
 	Next plugin.Handler
 }
 
+// options for unbound, see unbound.conf(5).
+var options = map[string]string{
+	"msg-cache-size":   "0",
+	"rrset-cache-size": "0",
+}
+
 // New returns a pointer to an initialzed Unbound.
 func New() *Unbound {
 	udp := unbound.New()
 	tcp := unbound.New()
 	tcp.SetOption("tcp-upstream:", "yes")
+
+	for k, v := range options {
+		k += ":" // add :, need for setting options in libunbound
+		err := udp.SetOption(k, v)
+		if err != nil {
+			log.Printf("[WARNING] Could not set option %s with value %s: %s", k, v, err)
+		}
+		// same failure here, don't repeat log
+		tcp.SetOption(k, v)
+	}
+
 	return &Unbound{u: udp, t: tcp}
 }
 
