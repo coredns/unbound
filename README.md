@@ -6,7 +6,10 @@
 
 ## Description
 
-Via *unbound* you can perform recursive queries to the internet.
+Via *unbound* you can perform recursive queries to the internet. Unbound uses DNSSEC by default when
+resolving *and* it returns those records (DNSKEY, RRSIG, NSEC and NSEC3) back to the clients.
+
+The internal answer cache of Unbound is disabled, so you may want to use the *cache* plugin.
 
 ## Syntax
 
