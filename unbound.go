@@ -70,6 +70,20 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 		return dns.RcodeServerFailure, err
 	}
 
+	// If the client *didn't* set the opt record, and specifically not the DO bit,
+	// strip this from the reply (unbound default to setting DO).
+	// TODO(miek): strip RRSIG/DNSSEC if not directly requested too?
+	if !state.Do() {
+		// technically we can still set bufsize and fluff, for now remove the entire OPT record.
+		for i := 0; i < len(res.AnswerPacket.Extra); i++ {
+			rr := res.AnswerPacket.Extra[i]
+			if _, ok := rr.(*dns.OPT); ok {
+				res.AnswerPacket.Extra = append(res.AnswerPacket.Extra[:i], res.AnswerPacket.Extra[i+1:]...)
+				break
+			}
+		}
+	}
+
 	res.AnswerPacket.Id = r.Id
 	state.SizeAndDo(res.AnswerPacket)
 	w.WriteMsg(res.AnswerPacket)
