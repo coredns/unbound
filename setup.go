@@ -3,6 +3,7 @@ package unbound
 import (
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
+	"github.com/coredns/coredns/plugin/metrics"
 
 	"github.com/mholt/caddy"
 )
@@ -23,6 +24,19 @@ func setup(c *caddy.Controller) error {
 	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
 		u.Next = next
 		return u
+	})
+
+	c.OnStartup(func() error {
+		once.Do(func() {
+			m := dnsserver.GetConfig(c).Handler("prometheus")
+			if m == nil {
+				return
+			}
+			if x, ok := m.(*metrics.Metrics); ok {
+				x.MustRegister(RequestDuration)
+			}
+		})
+		return nil
 	})
 
 	return nil

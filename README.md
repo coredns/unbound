@@ -36,7 +36,8 @@ unbound [FROM] {
 
 If monitoring is enabled (via the *prometheus* directive) then the following metric is exported:
 
-* TODO(miek)
+* `coredns_unbound_request_duration_seconds{}` - duration per query.
+* `coredns_unbound_response_rcode_count_total{rcode}` - count of RCODEs.
 
 ## Examples
 
