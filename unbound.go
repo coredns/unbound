@@ -31,6 +31,7 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 		return dns.RcodeServerFailure, err
 	}
 
+	res.AnswerPacket.Id = r.Id
 	state.SizeAndDo(res.AnswerPacket)
 	w.WriteMsg(res.AnswerPacket)
 
