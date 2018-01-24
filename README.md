@@ -31,6 +31,12 @@ unbound [FROM] {
 * **FROM** as above.
 * **IGNORED_NAMES** in `except` is a space-separated list of domains to exclude from resolving.
 
+## Metrics
+
+If monitoring is enabled (via the *prometheus* directive) then the following metric is exported:
+
+* TODO(miek)
+
 ## Examples
 
 Resolve queries for all domains:
