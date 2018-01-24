@@ -72,7 +72,6 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 
 	// If the client *didn't* set the opt record, and specifically not the DO bit,
 	// strip this from the reply (unbound default to setting DO).
-	// TODO(miek): strip RRSIG/DNSSEC if not directly requested too?
 	if !state.Do() {
 		// technically we can still set bufsize and fluff, for now remove the entire OPT record.
 		for i := 0; i < len(res.AnswerPacket.Extra); i++ {
@@ -82,6 +81,32 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 				break
 			}
 		}
+		// Loop through section again and remove RRSIG, NSEC, NSEC3
+		rrs := []dns.RR{}
+		for _, r := range res.AnswerPacket.Answer {
+			if !dnssec(r) {
+				rrs = append(rrs, r)
+			}
+		}
+		res.AnswerPacket.Answer = rrs
+
+		rrs = []dns.RR{}
+		for _, r := range res.AnswerPacket.Ns {
+			if !dnssec(r) {
+				rrs = append(rrs, r)
+			}
+
+		}
+		res.AnswerPacket.Ns = rrs
+
+		rrs = []dns.RR{}
+		for _, r := range res.AnswerPacket.Extra {
+			if !dnssec(r) {
+				rrs = append(rrs, r)
+			}
+
+		}
+		res.AnswerPacket.Extra = rrs
 	}
 
 	res.AnswerPacket.Id = r.Id
@@ -93,3 +118,16 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 
 // Name implements the Handler interface.
 func (u *Unbound) Name() string { return "unbound" }
+
+func dnssec(rr dns.RR) bool {
+	if _, ok := rr.(*dns.RRSIG); ok {
+		return true
+	}
+	if _, ok := rr.(*dns.NSEC); ok {
+		return true
+	}
+	if _, ok := rr.(*dns.NSEC3); ok {
+		return true
+	}
+	return false
+}
