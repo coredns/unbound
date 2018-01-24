@@ -49,7 +49,7 @@ Resolve everything except requests to miek.nl or example.org
 ## Bugs
 
 The *unbound* plugin depends on libunbound(3) which is C library, to compile this you have
-a dependency C and and cgo and you can't compile CoreDNS completely static. For compilation you
+a dependency on C and cgo. You can't compile CoreDNS completely static. For compilation you
 also need the libunbound source code installed.
 
 ## See Also
