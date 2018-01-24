@@ -49,7 +49,7 @@ Resolve everything except queries for miek.nl or example.org
 
 ~~~ corefile
 . {
-    unbound .{
+    unbound . {
         except miek.nl example.org
     }
 }
