@@ -40,7 +40,7 @@ Resolve everything except requests to miek.nl or example.org
 
 ~~~ corefile
 . {
-    unbound .{
+    unbound . {
         except miek.nl example.org
     }
 }

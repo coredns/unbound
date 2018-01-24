@@ -11,11 +11,13 @@ import (
 
 // Unbound is a plugin that resolves requests using libunbound.
 type Unbound struct {
-	u      *unbound.Unbound
-	t      *unbound.Unbound
-	Next   plugin.Handler
+	u *unbound.Unbound
+	t *unbound.Unbound
+
 	from   []string
 	except []string
+
+	Next plugin.Handler
 }
 
 // New returns a pointer to an initialzed Unbound.
@@ -29,6 +31,10 @@ func New() *Unbound {
 // ServeDNS implements the plugin.Handler interface.
 func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	state := request.Request{W: w, Req: r}
+
+	if !u.match(state) {
+		return plugin.NextOrFailure(u.Name(), u.Next, ctx, w, r)
+	}
 
 	var (
 		res *unbound.Result
