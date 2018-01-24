@@ -2,6 +2,7 @@ package unbound
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/coredns/request"
@@ -65,6 +66,19 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	case "udp":
 		res, err = u.u.Resolve(state.QName(), state.QType(), state.QClass())
 	}
+
+	rcode := dns.RcodeServerFailure
+	if err == nil {
+		rcode = res.AnswerPacket.Rcode
+	}
+
+	rc, ok := dns.RcodeToString[rcode]
+	if !ok {
+		rc = strconv.Itoa(rcode)
+	}
+
+	RcodeCount.WithLabelValues(rc).Add(1)
+	RequestDuration.Observe(res.Rtt.Seconds())
 
 	if err != nil {
 		return dns.RcodeServerFailure, err
