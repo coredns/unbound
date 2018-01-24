@@ -22,10 +22,7 @@ type Unbound struct {
 func New() *Unbound {
 	udp := unbound.New()
 	tcp := unbound.New()
-	err := tcp.SetOption("tcp-upstream:", "yes")
-	if err != nil {
-		println(err.Error())
-	}
+	tcp.SetOption("tcp-upstream:", "yes")
 	return &Unbound{u: udp, t: tcp}
 }
 
@@ -39,11 +36,9 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	)
 	switch state.Proto() {
 	case "tcp":
-		println("wheee")
 		res, err = u.t.Resolve(state.QName(), state.QType(), state.QClass())
 	case "udp":
 		res, err = u.u.Resolve(state.QName(), state.QType(), state.QClass())
-
 	}
 
 	if err != nil {
