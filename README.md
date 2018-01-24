@@ -30,13 +30,22 @@ unbound [FROM] {
 
 ## Examples
 
-Resolve all requests within example.org.
-
+Resolve queries for all domains:
+~~~ corefile
+. {
+    unbound
+}
 ~~~
-unbound example.org
+
+Resolve all queries within example.org.
+
+~~~ corefile
+. {
+    unbound example.org
+}
 ~~~
 
-Resolve everything except requests to miek.nl or example.org
+Resolve everything except queries for miek.nl or example.org
 
 ~~~ corefile
 . {
