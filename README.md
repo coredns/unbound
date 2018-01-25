@@ -6,11 +6,11 @@
 
 ## Description
 
-Via *unbound* you can perform recursive queries to the internet. Unbound uses DNSSEC by default when
-resolving *and* it returns those records (DNSKEY, RRSIG, NSEC and NSEC3) back to the clients. This
-also implies that OPT RR in the original request is not reflected upstream.
+Via *unbound* you can perform recursive queries. Unbound uses DNSSEC by default when resolving *and*
+it returns those records (DNSKEY, RRSIG, NSEC and NSEC3) back to the clients. The *unbound* plugin
+will remove those records when a client didn't ask for it.
 
-The internal answer cache of Unbound is disabled, so you may want to use the *cache* plugin.
+The internal (RR) answer cache of Unbound is disabled, so you may want to use the *cache* plugin.
 
 ## Syntax
 
@@ -56,12 +56,20 @@ Resolve all queries within example.org.
 }
 ~~~
 
-Resolve everything except queries for miek.nl or example.org
+or
+
+~~~ corefile
+example.org {
+    unbound
+}
+~~~
+
+Resolve everything except queries for example.org
 
 ~~~ corefile
 . {
-    unbound . {
-        except miek.nl example.org
+    unbound {
+        except example.org
     }
 }
 ~~~
