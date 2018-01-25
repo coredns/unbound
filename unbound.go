@@ -71,7 +71,6 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	if err == nil {
 		rcode = res.AnswerPacket.Rcode
 	}
-
 	rc, ok := dns.RcodeToString[rcode]
 	if !ok {
 		rc = strconv.Itoa(rcode)
@@ -92,38 +91,23 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 			rr := res.AnswerPacket.Extra[i]
 			if _, ok := rr.(*dns.OPT); ok {
 				res.AnswerPacket.Extra = append(res.AnswerPacket.Extra[:i], res.AnswerPacket.Extra[i+1:]...)
-				break
+				break // TODO(miek): more than one? Think TSIG?
 			}
 		}
-		// Loop through section again and remove RRSIG, NSEC, NSEC3
-		rrs := []dns.RR{}
-		for _, r := range res.AnswerPacket.Answer {
-			if !dnssec(r) {
-				rrs = append(rrs, r)
-			}
-		}
-		res.AnswerPacket.Answer = rrs
-
-		rrs = []dns.RR{}
-		for _, r := range res.AnswerPacket.Ns {
-			if !dnssec(r) {
-				rrs = append(rrs, r)
-			}
-
-		}
-		res.AnswerPacket.Ns = rrs
-
-		rrs = []dns.RR{}
-		for _, r := range res.AnswerPacket.Extra {
-			if !dnssec(r) {
-				rrs = append(rrs, r)
-			}
-
-		}
-		res.AnswerPacket.Extra = rrs
+		filter(res.AnswerPacket, dnssec)
 	}
 
 	res.AnswerPacket.Id = r.Id
+
+	// If the advertised size of the client is smaller than we got, unbound either retried with TCP or something else happened.
+	if state.Size() < res.AnswerPacket.Len() {
+		res.AnswerPacket, _ = state.Scrub(res.AnswerPacket)
+		res.AnswerPacket.Truncated = true
+		w.WriteMsg(res.AnswerPacket)
+
+		return 0, nil
+	}
+
 	state.SizeAndDo(res.AnswerPacket)
 	w.WriteMsg(res.AnswerPacket)
 
@@ -132,16 +116,3 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 
 // Name implements the Handler interface.
 func (u *Unbound) Name() string { return "unbound" }
-
-func dnssec(rr dns.RR) bool {
-	if _, ok := rr.(*dns.RRSIG); ok {
-		return true
-	}
-	if _, ok := rr.(*dns.NSEC); ok {
-		return true
-	}
-	if _, ok := rr.(*dns.NSEC3); ok {
-		return true
-	}
-	return false
-}
