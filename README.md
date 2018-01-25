@@ -2,7 +2,7 @@
 
 ## Name
 
-*unbound* - perform recursive queries using libunbound
+*unbound* - perform recursive queries using libunbound.
 
 ## Description
 
