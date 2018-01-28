@@ -12,6 +12,11 @@ will remove those records when a client didn't ask for it.
 
 The internal (RR) answer cache of Unbound is disabled, so you may want to use the *cache* plugin.
 
+Libunbound can be configured via (a subset of) options, currently the following are set:
+
+* `msg-cache-size`, set to 0
+* `rrset-cache-size`, set to 0
+
 ## Syntax
 
 ~~~
