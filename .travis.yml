@@ -4,6 +4,9 @@ go:
   - 1.9.x
   - tip
 
+git:
+  depth: 3
+
 env:
   - TESTS="-race -v -bench=. -coverprofile=coverage.txt -covermode=atomic"
   - TESTS="-race -v ./..."
@@ -13,7 +16,6 @@ before_install:
     - sudo apt-get install -y libunbound-dev
     - go get github.com/coredns/coredns
     - go get github.com/miekg/unbound
-
 
 script:
   - go test $TESTS
