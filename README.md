@@ -8,14 +8,15 @@
 
 Via *unbound* you can perform recursive queries. Unbound uses DNSSEC by default when resolving *and*
 it returns those records (DNSKEY, RRSIG, NSEC and NSEC3) back to the clients. The *unbound* plugin
-will remove those records when a client didn't ask for it.
-
-The internal (RR) answer cache of Unbound is disabled, so you may want to use the *cache* plugin.
+will remove those records when a client didn't ask for it. The internal (RR) answer cache of Unbound
+is disabled, so you may want to use the *cache* plugin.
 
 Libunbound can be configured via (a subset of) options, currently the following are set:
 
 * `msg-cache-size`, set to 0
 * `rrset-cache-size`, set to 0
+
+The *unbound* plugin uses <https://github.com/miekg/unbound> to interface with libunbound.
 
 ## Syntax
 
@@ -83,8 +84,9 @@ Resolve everything except queries for example.org
 
 The *unbound* plugin depends on libunbound(3) which is C library, to compile this you have
 a dependency on C and cgo. You can't compile CoreDNS completely static. For compilation you
-also need the libunbound source code installed.
+also need the libunbound source code installed (`libunbound-dev` on Debian).
 
 ## See Also
 
-See <https://unbound.net> for information on Unbound and unbound.conf(5).
+See <https://unbound.net> for information on Unbound and unbound.conf(5). See
+<https://github.com/miekg/unbound> for the (cgo) Go wrapper for libunbound.
