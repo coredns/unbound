@@ -1,6 +1,7 @@
 package unbound
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -35,17 +36,28 @@ func New() *Unbound {
 	tcp := unbound.New()
 	tcp.SetOption("tcp-upstream:", "yes")
 
+	u := &Unbound{u: udp, t: tcp}
+
 	for k, v := range options {
-		k += ":" // add :, need for setting options in libunbound
-		err := udp.SetOption(k, v)
-		if err != nil {
-			log.Printf("[WARNING] Could not set option %s with value %s: %s", k, v, err)
+		if err := u.setOption(k, v); err != nil {
+			log.Printf("[WARNING] Could not set option: %s", err)
 		}
-		// same failure here, don't repeat log
-		tcp.SetOption(k, v)
 	}
 
-	return &Unbound{u: udp, t: tcp}
+	return u
+}
+
+// setOption sets option k to value v in u.
+func (u *Unbound) setOption(k, v string) error {
+	// Add ":" as unbound expects it
+	k += ":"
+	// Set for both udp and tcp handlers, return the error from the latter.
+	u.u.SetOption(k, v)
+	err := u.t.SetOption(k, v)
+	if err != nil {
+		return fmt.Errorf("failed to set option %q with value %q: %s", k, v, err)
+	}
+	return nil
 }
 
 // ServeDNS implements the plugin.Handler interface.
