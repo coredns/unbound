@@ -8,6 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+// Metrics exported by the unbound plugin.
 var (
 	RequestDuration = prometheus.NewHistogram(prometheus.HistogramOpts{
 		Namespace: plugin.Namespace,
