@@ -68,6 +68,14 @@ func unboundParse(c *caddy.Controller) (*Unbound, error) {
 					except[i] = plugin.Host(except[i]).Normalize()
 				}
 				u.except = except
+			case "option":
+				args := c.RemainingArgs()
+				if len(args) != 2 {
+					return nil, c.ArgErr()
+				}
+				if err := u.setOption(args[0], args[1]); err != nil {
+					return nil, err
+				}
 			default:
 				return nil, c.ArgErr()
 			}

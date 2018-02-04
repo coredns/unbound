@@ -32,11 +32,14 @@ More features utilized with an expanded syntax:
 ~~~
 unbound [FROM] {
     except IGNORED_NAMES...
+    option NAME VALUE
 }
 ~~~
 
 * **FROM** as above.
 * **IGNORED_NAMES** in `except` is a space-separated list of domains to exclude from resolving.
+* `option` allows setting unbound options (see unbound.conf(5)), this can be specified multiple
+  times.
 
 ## Metrics
 
@@ -70,12 +73,22 @@ example.org {
 }
 ~~~
 
-Resolve everything except queries for example.org
+Resolve everything except queries for example.org (or below):
 
 ~~~ corefile
 . {
     unbound {
         except example.org
+    }
+}
+~~~
+
+Enable [DNS Query Name Minimisation](https://tools.ietf.org/html/rfc7816) by setting the option:
+
+~~~ corefile
+. {
+    unbound {
+        option qname-minimisation yes
     }
 }
 ~~~
