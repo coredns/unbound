@@ -38,11 +38,11 @@ func TestSetupExtended(t *testing.T) {
 		shouldErr bool
 	}{
 		{`unbound {
-			option qname-minimisation yes
-			option qname-minimisation yes
+			option msg-cache-size 0
+			option msg-cache-size 0
 		}`, false},
 		{`unbound {
-			option qname-minimisation yes
+			option msg-cache-size 0
 			except example.org example.net
 		}`, false},
 
