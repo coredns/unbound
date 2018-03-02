@@ -47,6 +47,13 @@ func New() *Unbound {
 	return u
 }
 
+// Stop stops unbound and cleans up the memory used.
+func (u *Unbound) Stop() error {
+	u.u.Destroy()
+	u.t.Destroy()
+	return nil
+}
+
 // setOption sets option k to value v in u.
 func (u *Unbound) setOption(k, v string) error {
 	// Add ":" as unbound expects it

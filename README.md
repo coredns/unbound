@@ -11,12 +11,14 @@ it returns those records (DNSKEY, RRSIG, NSEC and NSEC3) back to the clients. Th
 will remove those records when a client didn't ask for it. The internal (RR) answer cache of Unbound
 is disabled, so you may want to use the *cache* plugin.
 
-Libunbound can be configured via (a subset of) options, currently the following are set:
+Libunbound can be configured via (a subset of) options, currently the following are set, by default:
 
 * `msg-cache-size`, set to 0
 * `rrset-cache-size`, set to 0
 
 The *unbound* plugin uses <https://github.com/miekg/unbound> to interface with libunbound.
+
+This plugin can only be used once per Server Block.
 
 ## Syntax
 
@@ -38,7 +40,7 @@ unbound [FROM] {
 
 * **FROM** as above.
 * **IGNORED_NAMES** in `except` is a space-separated list of domains to exclude from resolving.
-* `option` allows setting unbound options (see unbound.conf(5)), this can be specified multiple
+* `option` allows setting *some* unbound options (see unbound.conf(5)), this can be specified multiple
   times.
 
 ## Metrics

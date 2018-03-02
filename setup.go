@@ -39,6 +39,7 @@ func setup(c *caddy.Controller) error {
 		})
 		return nil
 	})
+	c.OnShutdown(u.Stop)
 
 	return nil
 }
@@ -46,7 +47,12 @@ func setup(c *caddy.Controller) error {
 func unboundParse(c *caddy.Controller) (*Unbound, error) {
 	u := New()
 
+	i := 0
 	for c.Next() {
+		if i > 0 {
+			return nil, plugin.ErrOnce
+		}
+		i++
 
 		u.from = c.RemainingArgs()
 		if len(u.from) == 0 {
