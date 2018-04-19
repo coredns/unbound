@@ -2,10 +2,10 @@ package unbound
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/coredns/coredns/plugin"
+	"github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
 
 	"github.com/miekg/dns"
@@ -40,7 +40,7 @@ func New() *Unbound {
 
 	for k, v := range options {
 		if err := u.setOption(k, v); err != nil {
-			log.Printf("[WARNING] Could not set option: %s", err)
+			log.Warningf("Could not set option: %s", err)
 		}
 	}
 
