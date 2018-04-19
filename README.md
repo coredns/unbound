@@ -16,8 +16,6 @@ Libunbound can be configured via (a subset of) options, currently the following 
 * `msg-cache-size`, set to 0
 * `rrset-cache-size`, set to 0
 
-The *unbound* plugin uses <https://github.com/miekg/unbound> to interface with libunbound.
-
 This plugin can only be used once per Server Block.
 
 ## Syntax
@@ -100,6 +98,9 @@ Enable [DNS Query Name Minimisation](https://tools.ietf.org/html/rfc7816) by set
 The *unbound* plugin depends on libunbound(3) which is C library, to compile this you have
 a dependency on C and cgo. You can't compile CoreDNS completely static. For compilation you
 also need the libunbound source code installed (`libunbound-dev` on Debian).
+
+DNSSEC *validation* is not supported (yet). There is also no (documented) way of configurating
+a trust anchor.
 
 ## See Also
 
