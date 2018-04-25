@@ -5,13 +5,15 @@ import (
 	"strconv"
 
 	"github.com/coredns/coredns/plugin"
-	"github.com/coredns/coredns/plugin/pkg/log"
+	clog "github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
 
 	"github.com/miekg/dns"
 	"github.com/miekg/unbound"
 	"golang.org/x/net/context"
 )
+
+var log = clog.NewWithPlugin("unbound")
 
 // Unbound is a plugin that resolves requests using libunbound.
 type Unbound struct {
