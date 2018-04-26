@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/coredns/coredns/plugin"
+	"github.com/coredns/coredns/plugin/metrics"
 	clog "github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/coredns/coredns/request"
 
@@ -97,8 +98,9 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 		rc = strconv.Itoa(rcode)
 	}
 
-	RcodeCount.WithLabelValues(rc).Add(1)
-	RequestDuration.Observe(res.Rtt.Seconds())
+	server := metrics.WithServer(ctx)
+	RcodeCount.WithLabelValues(server, rc).Add(1)
+	RequestDuration.WithLabelValues(server).Observe(res.Rtt.Seconds())
 
 	if err != nil {
 		return dns.RcodeServerFailure, err
