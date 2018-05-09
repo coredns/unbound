@@ -53,6 +53,7 @@ The `server` label indicates which server handled the request, see the *metrics*
 ## Examples
 
 Resolve queries for all domains:
+
 ~~~ corefile
 . {
     unbound
