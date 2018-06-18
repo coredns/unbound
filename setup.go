@@ -49,6 +49,7 @@ func unboundParse(c *caddy.Controller) (*Unbound, error) {
 
 	i := 0
 	for c.Next() {
+		// Return an error if unbound block specified more than once
 		if i > 0 {
 			return nil, plugin.ErrOnce
 		}
@@ -64,6 +65,9 @@ func unboundParse(c *caddy.Controller) (*Unbound, error) {
 		}
 
 		for c.NextBlock() {
+			var args []string
+			var err error
+
 			switch c.Val() {
 			case "except":
 				except := c.RemainingArgs()
@@ -75,11 +79,19 @@ func unboundParse(c *caddy.Controller) (*Unbound, error) {
 				}
 				u.except = except
 			case "option":
-				args := c.RemainingArgs()
+				args = c.RemainingArgs()
 				if len(args) != 2 {
 					return nil, c.ArgErr()
 				}
-				if err := u.setOption(args[0], args[1]); err != nil {
+				if err = u.setOption(args[0], args[1]); err != nil {
+					return nil, err
+				}
+			case "config":
+				args = c.RemainingArgs()
+				if len(args) != 1 {
+					return nil, c.ArgErr()
+				}
+				if err = u.config(args[0]); err != nil {
 					return nil, err
 				}
 			default:

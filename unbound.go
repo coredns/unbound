@@ -70,6 +70,22 @@ func (u *Unbound) setOption(k, v string) error {
 	return nil
 }
 
+// config reads the file f and sets unbound configuration
+func (u *Unbound) config(f string) error {
+	var err error
+
+	err = u.u.Config(f)
+	if err != nil {
+		return fmt.Errorf("failed to read config file (%s) UDP context: %s", f, err)
+	}
+
+	err = u.t.Config(f)
+	if err != nil {
+		return fmt.Errorf("failed to read config file (%s) TCP context: %s", f, err)
+	}
+	return nil
+}
+
 // ServeDNS implements the plugin.Handler interface.
 func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	state := request.Request{W: w, Req: r}
