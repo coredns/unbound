@@ -1,6 +1,7 @@
 package unbound
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -11,7 +12,6 @@ import (
 
 	"github.com/miekg/dns"
 	"github.com/miekg/unbound"
-	"golang.org/x/net/context"
 )
 
 var log = clog.NewWithPlugin("unbound")
