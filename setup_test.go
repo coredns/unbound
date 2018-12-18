@@ -52,6 +52,12 @@ func TestSetupExtended(t *testing.T) {
 		{`unbound {
 			optoin qname-minimisation yes
 		}`, true},
+		{`unbound {
+			config resources/unbound.conf.bad
+		}`, true},
+		{`unbound {
+			config resources/unbound.conf.good
+		}`, false},
 	}
 
 	for i, test := range tests {
