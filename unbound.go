@@ -121,10 +121,7 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	}
 
 	res.AnswerPacket.Id = r.Id
-
-	state.SizeAndDo(res.AnswerPacket)
 	w.WriteMsg(res.AnswerPacket)
-
 	return 0, nil
 }
 
