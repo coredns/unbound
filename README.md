@@ -33,6 +33,7 @@ More features utilized with an expanded syntax:
 unbound [FROM] {
     except IGNORED_NAMES...
     option NAME VALUE
+    config FILENAME
 }
 ~~~
 
@@ -40,6 +41,9 @@ unbound [FROM] {
 * **IGNORED_NAMES** in `except` is a space-separated list of domains to exclude from resolving.
 * `option` allows setting *some* unbound options (see unbound.conf(5)), this can be specified multiple
   times.
+* `config` allows one to supply an `unbound.conf` file to configure unbound.
+  _Note:_ The unbound configuration file still needs to be populated inside a
+  docker container.
 
 ## Metrics
 
