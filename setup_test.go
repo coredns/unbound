@@ -53,10 +53,10 @@ func TestSetupExtended(t *testing.T) {
 			optoin qname-minimisation yes
 		}`, true},
 		{`unbound {
-			config resources/unbound.conf.bad
+			config testdata/unbound.conf.bad
 		}`, true},
 		{`unbound {
-			config resources/unbound.conf.good
+			config testdata/unbound.conf.good
 		}`, false},
 	}
 
