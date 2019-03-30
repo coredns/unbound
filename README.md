@@ -105,7 +105,7 @@ The *unbound* plugin depends on libunbound(3) which is C library, to compile thi
 a dependency on C and cgo. You can't compile CoreDNS completely static. For compilation you
 also need the libunbound source code installed (`libunbound-dev` on Debian).
 
-DNSSEC *validation* is not supported (yet). There is also no (documented) way of configurating
+DNSSEC *validation* is not supported (yet). There is also no (documented) way of configuration
 a trust anchor.
 
 ## See Also
