@@ -99,6 +99,11 @@ Enable [DNS Query Name Minimisation](https://tools.ietf.org/html/rfc7816) by set
 }
 ~~~
 
+## Compiling into CoreDNS
+
+To compile this with CoreDNS you can follow the normal procedure for external plugins, except that
+you need to compile it with cgo. This means setting `CGO_ENABLED=1` when running `go build`.
+
 ## Bugs
 
 The *unbound* plugin depends on libunbound(3) which is C library, to compile this you have
