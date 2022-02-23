@@ -2,6 +2,7 @@ package unbound
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -14,7 +15,12 @@ import (
 	"github.com/miekg/unbound"
 )
 
-var log = clog.NewWithPlugin("unbound")
+var (
+	log                = clog.NewWithPlugin("unbound")
+	errNilResult       = errors.New("nil result from unbound")
+	errNilMessage      = errors.New("nil message from unbound")
+	errMissingQuestion = errors.New("missing question in result from unbound")
+)
 
 // Unbound is a plugin that resolves requests using libunbound.
 type Unbound struct {
@@ -116,10 +122,21 @@ func (u *Unbound) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 
 	server := metrics.WithServer(ctx)
 	RcodeCount.WithLabelValues(server, rc).Add(1)
-	RequestDuration.WithLabelValues(server).Observe(res.Rtt.Seconds())
+	if res != nil {
+		RequestDuration.WithLabelValues(server).Observe(res.Rtt.Seconds())
+	}
 
 	if err != nil {
 		return dns.RcodeServerFailure, err
+	}
+	if res == nil {
+		return dns.RcodeServerFailure, errNilResult
+	}
+	if res.AnswerPacket == nil {
+		return dns.RcodeServerFailure, errNilMessage
+	}
+	if len(res.AnswerPacket.Question) == 0 {
+		return dns.RcodeServerFailure, errMissingQuestion
 	}
 
 	// If the client *didn't* set the opt record, and specifically not the DO bit,
